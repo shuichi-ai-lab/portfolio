@@ -132,6 +132,8 @@
   /* 連絡先（オレンジ地に黒文字） */
   .contact { background: var(--accent); color: var(--on-accent); }
   .contact h2, .contact .lead { color: var(--on-accent); }
+  .contact a:not(.btn) { color: var(--on-accent); text-decoration: underline; font-weight: 700; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .contact .btn { background: var(--on-accent); border-color: var(--on-accent); color: #fff; }
   .contact .btn:hover { background: #26302F; border-color: #26302F; }
   .contact ul { margin: 24px 0 0; padding-left: 1.2em; font-size: 16px; }
@@ -289,10 +291,11 @@
       <h2 class="section-title" id="contact-title">連絡先</h2>
       <p class="lead">まずは今のお店の状況を聞かせてください。ご相談だけでも大丈夫です。</p>
       <div class="btn-row">
-        <a class="btn" href="https://www.instagram.com/57sai_gohan/" target="_blank" rel="noopener noreferrer">Instagramで相談する</a>
+        <a class="btn" href="https://ig.me/m/57sai_gohan" target="_blank" rel="noopener noreferrer">InstagramのDMで相談する<span class="sr-only">（新しいタブで開きます）</span></a>
       </div>
       <ul>
         <li>返信：いただいたメッセージは、早めに確認して丁寧にお返事します</li>
+        <li>プロフィール：<a href="https://www.instagram.com/57sai_gohan/" target="_blank" rel="noopener noreferrer">@57sai_gohan</a>（新しいタブで開きます）</li>
         <li>稼働時間：週に20〜25時間ほど（1日4〜5時間程度）</li>
       </ul>
     </div>
