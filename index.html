@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>飲食店のInstagram運用・リール制作 | ポートフォリオ</title>
+<meta name="description" content="個人経営・小規模の飲食店向けに、Instagram運用代行・リール動画制作・投稿企画を承っています。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0B0F10;       /* 背景（黒） */
+    --surface: #151A1C;  /* カード */
+    --border: #2F3639;   /* 区切り線 */
+    --text: #F5F5F2;     /* 文字 */
+    --text-sub: #C3C8CA; /* 補足の文字 */
+    --accent: #F2A11F;   /* アクセント（オレンジ） */
+    --on-accent: #0B0F10;/* オレンジ地の上の文字 */
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; color-scheme: dark; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Noto Sans JP", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+  }
+  h1, h2, h3 {
+    font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.35;
+    margin: 0;
+  }
+  img { max-width: 100%; height: auto; display: block; }
+  a { color: var(--accent); }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .contact :focus-visible { outline-color: var(--on-accent); }
+  .thumb:focus-visible { outline-offset: -3px; }
+
+  .wrap { width: 100%; max-width: 960px; margin: 0 auto; padding: 0 16px; }
+
+  /* 英字の小見出し（飾り） */
+  .eyebrow {
+    display: block;
+    font-family: "Noto Sans JP", sans-serif; font-weight: 500;
+    font-size: 14px; letter-spacing: .2em; line-height: 1.4;
+    color: var(--accent); margin-bottom: 4px;
+  }
+  .contact .eyebrow { color: var(--on-accent); }
+
+  /* ヘッダー */
+  .site-header { border-bottom: 1px solid var(--border); }
+  .site-header .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 4px 12px; padding-top: 8px; padding-bottom: 8px; }
+  .brand { font-family: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; font-weight: 700; color: var(--text); text-decoration: none; }
+  .nav { display: flex; gap: 4px; }
+  .nav a { color: var(--text); text-decoration: none; padding: 12px 10px; font-size: 16px; min-height: 44px; display: inline-flex; align-items: center; }
+  .nav a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ボタン */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 48px; padding: 12px 26px;
+    background: var(--accent); color: var(--on-accent);
+    font-weight: 700; text-decoration: none;
+    border-radius: 999px; border: 2px solid var(--accent);
+  }
+  .btn:hover { background: #FFB944; border-color: #FFB944; }
+  .btn.ghost { background: transparent; color: var(--text); border-color: var(--text); }
+  .btn.ghost:hover { background: var(--text); color: var(--on-accent); }
+
+  /* ファーストビュー（導入） */
+  .intro { padding: 56px 0 48px; }
+  .intro .bar { display: block; width: 72px; height: 6px; background: var(--accent); border-radius: 3px; margin-bottom: 20px; }
+  .intro h1 { font-size: clamp(30px, 7.5vw, 52px); font-weight: 800; letter-spacing: .02em; text-wrap: balance; }
+  .intro h1 .hl { color: var(--accent); }
+  .intro h1 .hl, .intro h1 .ph { display: inline-block; }
+  .intro p { margin: 20px 0 28px; max-width: 36em; color: var(--text-sub); }
+  .btn-row { display: flex; flex-wrap: wrap; gap: 12px; }
+
+  section { padding: 64px 0; }
+  .section-title { font-size: clamp(26px, 6vw, 36px); margin-bottom: 8px; }
+  .lead { margin: 0 0 28px; max-width: 40em; color: var(--text-sub); }
+
+  /* できること */
+  .skills { display: grid; gap: 12px; grid-template-columns: 1fr; margin: 0 0 8px; padding: 0; list-style: none; }
+  .skills li { background: var(--surface); border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: var(--radius); padding: 18px 16px; }
+  .skills h3 { font-size: 18px; margin-bottom: 4px; }
+  .skills p { margin: 0; font-size: 16px; color: var(--text-sub); }
+
+  /* 作品 */
+  .works { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: start; }
+  .work { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .work .thumb {
+    aspect-ratio: 16 / 9;
+    background: var(--bg);
+    display: grid; place-items: center;
+    color: var(--text); font-size: 16px; text-align: center; padding: 16px;
+  }
+  .work .body { padding: 16px; }
+  .work h3 { font-size: 19px; margin-bottom: 8px; }
+  .work dl { margin: 0; font-size: 16px; }
+  .work dt { font-weight: 700; color: var(--accent); margin-top: 10px; }
+  .work dd { margin: 0; color: var(--text-sub); }
+  .work > p { color: var(--text-sub); }
+  .work > p strong { color: var(--text); }
+  .work > ul.notes { margin: 0; padding: 0 16px 16px 38px; font-size: 14px; color: var(--text-sub); }
+  .work > ul.notes li { margin-top: 6px; }
+  .work > ul.notes strong { color: var(--text); }
+  .cta-mid { margin-top: 28px; }
+
+  /* 進め方 */
+  .steps { counter-reset: s; display: grid; gap: 10px; padding: 0; margin: 32px 0 0; list-style: none; grid-template-columns: 1fr; }
+  .steps li { counter-increment: s; background: var(--surface); border: 1px solid var(--border); border-left: 6px solid var(--accent); border-radius: 8px; padding: 12px 16px; font-weight: 700; }
+  .steps li::before { content: "0" counter(s) "  "; font-family: "Noto Sans JP", sans-serif; font-size: 16px; letter-spacing: .08em; color: var(--accent); }
+
+  /* プロフィール */
+  #profile { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .profile { display: grid; gap: 20px; grid-template-columns: 1fr; align-items: start; }
+  .profile h3 { font-size: 24px; }
+  .profile .role { margin: 2px 0 12px; font-size: 16px; color: var(--accent); font-weight: 700; }
+  .profile p { color: var(--text-sub); }
+  .profile ul { margin: 12px 0 0; padding-left: 1.2em; }
+  .profile li::marker { color: var(--accent); }
+
+  /* 連絡先（オレンジ地に黒文字） */
+  .contact { background: var(--accent); color: var(--on-accent); }
+  .contact h2, .contact .lead { color: var(--on-accent); }
+  .contact .btn { background: var(--on-accent); border-color: var(--on-accent); color: #fff; }
+  .contact .btn:hover { background: #26302F; border-color: #26302F; }
+  .contact ul { margin: 24px 0 0; padding-left: 1.2em; font-size: 16px; }
+
+  footer { padding: 24px 0 96px; font-size: 14px; color: var(--text-sub); }
+
+  /* スマホで押しやすい固定ボタン */
+  .fixed-cta {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    background: var(--bg); border-top: 1px solid var(--border);
+  }
+  .fixed-cta .btn { width: 100%; }
+
+  @media (min-width: 640px) {
+    .skills { grid-template-columns: repeat(3, 1fr); }
+    .works { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (min-width: 900px) {
+    .works { grid-template-columns: repeat(3, 1fr); }
+    .steps { grid-template-columns: repeat(4, 1fr); }
+    .fixed-cta { display: none; }
+    footer { padding-bottom: 32px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="#top">鶴岡 周一</a>
+    <nav class="nav" aria-label="ページ内メニュー">
+      <a href="#works">作品</a>
+      <a href="#profile">プロフィール</a>
+      <a href="#contact">連絡先</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="intro">
+    <div class="wrap">
+      <span class="bar" aria-hidden="true"></span>
+      <h1><span class="hl">料理人37年</span><span class="ph">の現場目線</span> <span class="ph">× AIで、</span><span class="ph">飲食店の</span><span class="ph">Instagram運用を</span><span class="ph">支えます</span></h1>
+      <p>個人経営・小規模の飲食店向けに、Instagram運用代行・リール動画制作・投稿企画を承っています。投稿して終わりにせず、振り返りと改善まで一緒に進めます。</p>
+      <div class="btn-row">
+        <a class="btn" href="#contact">相談する</a>
+        <a class="btn ghost" href="#works">作品を見る</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 作品 -->
+  <section id="works" aria-labelledby="works-title">
+    <div class="wrap">
+      <span class="eyebrow" aria-hidden="true">WORKS</span>
+      <h2 class="section-title" id="works-title">作品</h2>
+      <p class="lead">取り組んだ内容を、「誰の・何のために・やったこと」でまとめています。</p>
+
+      <ul class="skills" role="list" aria-label="できること">
+        <li><h3>Instagram運用代行</h3><p>企画から投稿、振り返りまでを続けて担当します。</p></li>
+        <li><h3>リール動画制作</h3><p>撮影・編集を、現場の動きに合わせて進めます。</p></li>
+        <li><h3>投稿企画</h3><p>店の強みから、続けられる投稿ネタを考えます。</p></li>
+      </ul>
+
+      <div class="works" style="margin-top:28px">
+        <article class="work">
+          <a class="thumb" href="https://www.instagram.com/reel/Da-m4yTy_Qr/" target="_blank" rel="noopener noreferrer" style="display:block;padding:0"><img src="images/reel-thumb.webp" width="1080" height="1920" alt="冷やし辛ラーメンのレシピリールをInstagramで見る（新しいタブで開きます）" style="width:100%;height:100%;object-fit:cover;object-position:50% 40%"></a>
+          <div class="body">
+            <h3>冷やし辛ラーメンのレシピリール</h3>
+            <dl>
+              <dt>誰の</dt><dd>自分のInstagramアカウントで公開した動画</dd>
+              <dt>何のために</dt><dd>暑い日に試したくなる、手軽なアレンジレシピを伝えるため</dd>
+              <dt>やったこと</dt><dd>企画、撮影、編集のすべて</dd>
+              <dt>実績</dt><dd>閲覧数 3,336回（2026年10月時点、Instagramインサイトより。自アカウントのリールで最高）</dd>
+            </dl>
+            <a class="btn" style="margin-top:16px" href="https://www.instagram.com/reel/Da-m4yTy_Qr/" target="_blank" rel="noopener noreferrer">Instagramで見る</a>
+          </div>
+        </article>
+
+        <article class="work">
+          <a class="thumb" href="images/sns-marketer.webp" target="_blank" rel="noopener noreferrer" style="display:block;padding:0;aspect-ratio:16/9"><img src="images/sns-marketer.webp" width="1672" height="941" loading="lazy" decoding="async" alt="「SNSマーケターAI」の紹介画像。月・水・金の週3回の投稿の型と、投稿文づくりから公開前のチェックまでの流れを示しています。スマホの投稿プレビューの文章は架空のサンプルです。（新しいタブで拡大して開きます）" style="width:100%;height:100%;object-fit:cover"></a>
+          <div class="body">
+            <h3>SNSマーケター（投稿文づくりの仕組み）</h3>
+            <dl>
+              <dt>誰の</dt><dd>ランチ・カフェ系のお店のInstagram投稿づくりを想定して、自分で作ったAIの仕組み（実際のお店ではまだ使っていません）</dd>
+              <dt>何のために</dt><dd>月曜（事例）・水曜（ノウハウ）・金曜（裏側）の週3回の型で、無理なく続けられる投稿づくりを支えることを目指して作りました</dd>
+              <dt>やったこと</dt><dd>仕組みの企画と、投稿文ができるまでの流れ（ヒアリング → 下書き → 投稿前の確認 → 提出）の設計。紹介画像の作成（AIで生成）</dd>
+            </dl>
+          </div>
+          <ul class="notes" role="list">
+            <li><strong>AIで制作したイメージ画像です。</strong>画像内の投稿プレビューの文章は、架空の例です。</li>
+            <li>画像内の「品質レビュー」「法令・ブランドの観点からチェック」は、AIが作った下書きを確認する工程を表したもので、品質や法令への適合を保証するものではありません。「もっと多くの人に届ける」「幅広い層にアプローチ」は目指す姿で、効果を約束するものではありません。</li>
+            <li>自分用に作った仕組みで、お客様向けに公開しているサービスではありません。</li>
+          </ul>
+        </article>
+
+        <article class="work">
+          <a class="thumb" href="shindan/index.html" style="display:block;padding:0;aspect-ratio:16/9"><img src="images/shindan-banner.webp" width="1672" height="941" loading="lazy" decoding="async" alt="「料理発信AI診断」の紹介画像。12の質問で、企画・ネタ探し、文章・レシピ作成、リール制作、投稿後の運用、投稿全体の負担の5つの分野を診断する流れを示しています。タップすると診断ツールが開きます。" style="width:100%;height:100%;object-fit:cover"></a>
+          <div class="body">
+            <h3>料理発信AI診断（診断ツール）</h3>
+            <dl>
+              <dt>誰の</dt><dd>SNSで料理・商品を発信する、飲食店・食品関連の方向け</dd>
+              <dt>何のために</dt><dd>投稿づくりのどこにAIが使えそうかを、自分の作業から振り返るきっかけにするため</dd>
+              <dt>やったこと</dt><dd>12の質問に答えると、AIでラクにできそうな作業の目安が分かる簡易チェックの設計・制作。紹介画像の作成（AIで生成）</dd>
+            </dl>
+            <p style="margin:12px 0 0;font-size:16px">診断は選択式で、回答内容は送信・保存されません。</p>
+            <a class="btn" style="margin-top:16px" href="shindan/index.html">診断を試す</a>
+          </div>
+          <p style="margin:0;padding:0 16px 16px;font-size:14px"><strong>AIで制作したイメージ画像です。</strong>画像内のスマホ画面は一例で、実際の診断画面とは異なります。診断は、12の質問への回答の点数から作業の目安を表示する簡易チェックで、AIが回答やアカウントを分析するものではありません。</p>
+        </article>
+      </div>
+
+      <ol class="steps" role="list" aria-label="進め方">
+        <li>ヒアリング</li>
+        <li>企画</li>
+        <li>制作・投稿</li>
+        <li>振り返り・改善</li>
+      </ol>
+
+      <div class="cta-mid"><a class="btn" href="#contact">この内容で相談する</a></div>
+    </div>
+  </section>
+
+  <!-- プロフィール -->
+  <section id="profile" aria-labelledby="profile-title">
+    <div class="wrap">
+      <span class="eyebrow" aria-hidden="true">PROFILE</span>
+      <h2 class="section-title" id="profile-title">プロフィール</h2>
+      <div class="profile">
+        <div>
+          <h3>鶴岡 周一</h3>
+          <p class="role">飲食業界37年 × Instagram運用・リール動画制作</p>
+          <p>1988年から2025年まで外食企業に37年間勤務。調理スタッフからキャリアをスタートし、調理長・調理指導員・総料理長を経て、事業部長として最大29店舗の運営を統括しました。現場の調理・店舗運営から、商品開発・スタッフ教育・原価管理・売上損益分析まで、飲食店運営を幅広く経験しています。</p>
+          <ul>
+            <li>飲食業界37年の実務経験（調理・運営・経営）</li>
+            <li>事業部長として最大29店舗を統括</li>
+            <li>商品開発・メニュー改善・原価管理</li>
+            <li>調理指導員・総料理長として人材育成を担当</li>
+          </ul>
+          <p style="margin-top:16px">現在は、飲食業界の経験にSNS運用・生成AI・動画制作を掛け合わせ、飲食店の「魅力が伝わる発信」を支援します。</p>
+          <p style="margin-top:16px">自分のアカウントで68本のリールを制作しました（公開中は39本。反応の低いものはアーカイブ）。累計閲覧数は約5万7千回、最高は3,336回です（アーカイブ分を含む。2026年10月時点、Instagramインサイトより）。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 連絡先 -->
+  <section id="contact" class="contact" aria-labelledby="contact-title">
+    <div class="wrap">
+      <span class="eyebrow" aria-hidden="true">CONTACT</span>
+      <h2 class="section-title" id="contact-title">連絡先</h2>
+      <p class="lead">まずは今のお店の状況を聞かせてください。ご相談だけでも大丈夫です。</p>
+      <div class="btn-row">
+        <a class="btn" href="https://www.instagram.com/57sai_gohan/" target="_blank" rel="noopener noreferrer">Instagramで相談する</a>
+      </div>
+      <ul>
+        <li>返信：いただいたメッセージは、早めに確認して丁寧にお返事します</li>
+        <li>稼働時間：週に20〜25時間ほど（1日4〜5時間程度）</li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">© 鶴岡 周一<br>Instagramは Meta Platforms, Inc. の商標または登録商標です。当サイトはMeta社とは関係ありません。</div>
+</footer>
+
+<div class="fixed-cta"><a class="btn" href="#contact">相談する</a></div>
+
+</body>
+</html>

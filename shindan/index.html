@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>料理発信AI診断</title>
+<meta name="description" content="12の質問に答えて、投稿づくりのどこにAIが使えそうかの目安を確認できる簡易チェックです。">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@700;800&display=swap">
+
+<style>
+  :root {
+    --bg: #0B0F10;
+    --surface: #151A1C;
+    --surface-2: #1E2527;
+    --text: #F5F5F2;
+    --text-sub: #C3C8CA;
+    --accent: #F2A11F;
+    --on-accent: #0B0F10;
+    --accent-light: #2A2110;
+    --border: #2F3639;
+    --choice-border: #8F8983;
+    --cat-a: #6FA8DC;
+    --cat-b: #6FBF6F;
+    --cat-c: #E07B3A;
+    --cat-d: #B497D6;
+    --cat-e: #C9A27A;
+    --good: #6FBF6F;
+    --warn: #F2A11F;
+    --crit: #E5736A;
+    --serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  }
+  html { color-scheme: dark; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+    padding-inline: 16px;
+    padding-block: 32px;
+  }
+
+  .wrap { max-width: 680px; margin-inline: auto; display: flex; flex-direction: column; gap: 24px; }
+
+  /* Header */
+  .header { text-align: center; padding-block: 8px 4px; }
+  .header-label {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .2em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-family: var(--serif);
+    font-size: clamp(24px, 6.5vw, 34px);
+    font-weight: 800;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+  .header p { color: var(--text-sub); font-size: 16px; margin-top: 8px; }
+
+  /* Progress */
+  .progress-bar-wrap { background: var(--border); border-radius: 4px; height: 4px; overflow: hidden; }
+  .progress-bar { height: 100%; background: var(--accent); border-radius: 4px; transition: width .3s; }
+  .progress-label { font-size: 16px; color: var(--text-sub); text-align: right; margin-top: 4px; }
+
+  /* Category card */
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-badge {
+    width: 28px; height: 28px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: var(--on-accent);
+    flex-shrink: 0;
+  }
+  .cat-title { font-family: var(--serif); font-size: 18px; font-weight: 700; }
+
+  /* Question */
+  .question { padding: 16px 18px; border-bottom: 1px solid var(--border); }
+  .question:last-child { border-bottom: none; }
+  .q-text { font-size: 16px; font-weight: 500; margin-bottom: 12px; }
+  .q-num { color: var(--text-sub); font-size: 14px; font-weight: 400; margin-right: 4px; }
+
+  .choices { display: flex; flex-direction: column; gap: 6px; }
+  .choice-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    min-height: 44px;
+    position: relative;
+    border: 1px solid var(--choice-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+    font-size: 16px;
+  }
+  .choice-label:hover { border-color: var(--accent); background: var(--accent-light); }
+  .choice-label input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; }
+  .choice-label:focus-within { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .back { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: 16px; }
+  .notice { background: var(--surface-2); border-radius: 8px; padding: 12px 14px; font-size: 16px; color: var(--text); text-align: left; margin-top: 12px; }
+  .choice-label.selected { border-color: var(--accent); background: var(--accent-light); font-weight: 500; }
+  .radio-dot {
+    width: 16px; height: 16px;
+    border: 2px solid var(--choice-border);
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: border-color .15s, background .15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .choice-label.selected .radio-dot {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .choice-label.selected .radio-dot::after {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--on-accent);
+    border-radius: 50%;
+  }
+
+  /* Submit */
+  .submit-wrap { text-align: center; }
+  .btn-diagnose {
+    background: var(--accent);
+    color: var(--on-accent);
+    border: none;
+    padding: 14px 40px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+    letter-spacing: .04em;
+  }
+  .btn-diagnose:disabled { opacity: .4; cursor: not-allowed; }
+  .btn-diagnose:not(:disabled):hover { opacity: .85; }
+  .submit-note { font-size: 16px; color: var(--text-sub); margin-top: 8px; }
+
+  /* Results */
+  #results { display: none; }
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .result-header { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+  .result-header h2 { font-family: var(--serif); font-size: 22px; font-weight: 800; }
+  .result-header p { font-size: 16px; color: var(--text-sub); margin-top: 4px; }
+
+  .score-bars { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+  .score-row { display: flex; align-items: center; gap: 10px; }
+  .score-cat-label { font-size: 14px; font-weight: 700; width: 130px; flex-shrink: 0; }
+  .score-bar-bg { flex: 1; background: var(--surface-2); border-radius: 4px; height: 10px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 4px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+  .score-pct { font-size: 14px; font-weight: 700; width: 44px; text-align: right; flex-shrink: 0; }
+
+  .recs { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .rec-item {
+    padding: 14px 16px;
+    border-radius: 10px;
+    border-left: 4px solid;
+  }
+  .rec-item.high { border-color: var(--crit); background: #2B1A19; }
+  .rec-item.mid  { border-color: var(--warn); background: var(--accent-light); }
+  .rec-item.low  { border-color: var(--good); background: #162417; }
+
+  .rec-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .rec-body { font-size: 16px; color: var(--text-sub); line-height: 1.6; }
+
+  .btn-retry {
+    background: transparent;
+    border: 1px solid var(--choice-border);
+    color: var(--text-sub);
+    padding: 12px 28px;
+    min-height: 44px;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    transition: border-color .15s, color .15s;
+  }
+  .btn-retry:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">← ポートフォリオに戻る</a>
+  <div class="header">
+    <div class="header-label">料理発信者向け</div>
+    <h1>Instagram投稿、<br>どこをAIでラクにできる？</h1>
+    <p>12の質問に答えるだけで、負担の大きい作業の目安が分かります</p>
+    <p class="notice">これは選択式の簡易チェックです。回答の点数から目安を表示するもので、AIが回答やアカウントを分析するものではありません。回答は送信・保存されません。</p>
+  </div>
+
+  <div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
+    <div class="progress-label" role="status"><span id="progressText">0</span> / 12 回答済み</div>
+  </div>
+
+  <div id="quiz">
+    <!-- A -->
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-badge" style="background:var(--cat-a)">A</div>
+        <div class="cat-title">企画・ネタ探し</div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q1"><span class="q-num">Q1</span>投稿のアイデアを考えるのに、週どのくらい時間をかけていますか？</div>
+        <div class="choices" data-q="q1" role="radiogroup" aria-labelledby="qt-q1">
+          <label class="choice-label"><input type="radio" name="q1" value="0"><div class="radio-dot"></div>15分未満</label>
+          <label class="choice-label"><input type="radio" name="q1" value="1"><div class="radio-dot"></div>15〜30分</label>
+          <label class="choice-label"><input type="radio" name="q1" value="2"><div class="radio-dot"></div>30分〜1時間</label>
+          <label class="choice-label"><input type="radio" name="q1" value="3"><div class="radio-dot"></div>1〜2時間</label>
+          <label class="choice-label"><input type="radio" name="q1" value="4"><div class="radio-dot"></div>2時間以上</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q2"><span class="q-num">Q2</span>投稿ネタが思い浮かばず、手が止まることはありますか？</div>
+        <div class="choices" data-q="q2" role="radiogroup" aria-labelledby="qt-q2">
+          <label class="choice-label"><input type="radio" name="q2" value="0"><div class="radio-dot"></div>ほとんどない</label>
+          <label class="choice-label"><input type="radio" name="q2" value="1"><div class="radio-dot"></div>月に1〜2回</label>
+          <label class="choice-label"><input type="radio" name="q2" value="2"><div class="radio-dot"></div>週に1〜2回</label>
+          <label class="choice-label"><input type="radio" name="q2" value="3"><div class="radio-dot"></div>ほぼ毎回</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q3"><span class="q-num">Q3</span>過去の投稿と内容が重複していないか、確認する作業に負担を感じますか？</div>
+        <div class="choices" data-q="q3" role="radiogroup" aria-labelledby="qt-q3">
+          <label class="choice-label"><input type="radio" name="q3" value="0"><div class="radio-dot"></div>負担はない</label>
+          <label class="choice-label"><input type="radio" name="q3" value="1"><div class="radio-dot"></div>少し負担</label>
+          <label class="choice-label"><input type="radio" name="q3" value="2"><div class="radio-dot"></div>かなり負担</label>
+          <label class="choice-label"><input type="radio" name="q3" value="3"><div class="radio-dot"></div>確認できていない</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-badge" style="background:var(--cat-b)">B</div>
+        <div class="cat-title">文章・レシピ作成</div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q4"><span class="q-num">Q4</span>キャプションを書くのに、1投稿あたりどのくらい時間がかかりますか？</div>
+        <div class="choices" data-q="q4" role="radiogroup" aria-labelledby="qt-q4">
+          <label class="choice-label"><input type="radio" name="q4" value="0"><div class="radio-dot"></div>5分未満</label>
+          <label class="choice-label"><input type="radio" name="q4" value="1"><div class="radio-dot"></div>5〜15分</label>
+          <label class="choice-label"><input type="radio" name="q4" value="2"><div class="radio-dot"></div>15〜30分</label>
+          <label class="choice-label"><input type="radio" name="q4" value="3"><div class="radio-dot"></div>30分以上</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q5"><span class="q-num">Q5</span>ハッシュタグを選ぶ作業に時間がかかっていますか？</div>
+        <div class="choices" data-q="q5" role="radiogroup" aria-labelledby="qt-q5">
+          <label class="choice-label"><input type="radio" name="q5" value="0"><div class="radio-dot"></div>かからない</label>
+          <label class="choice-label"><input type="radio" name="q5" value="1"><div class="radio-dot"></div>少しかかる</label>
+          <label class="choice-label"><input type="radio" name="q5" value="2"><div class="radio-dot"></div>かなりかかる</label>
+          <label class="choice-label"><input type="radio" name="q5" value="3"><div class="radio-dot"></div>選び方が分からない</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q6"><span class="q-num">Q6</span>レシピの分量や作り方を文章にまとめる作業に時間がかかっていますか？</div>
+        <div class="choices" data-q="q6" role="radiogroup" aria-labelledby="qt-q6">
+          <label class="choice-label"><input type="radio" name="q6" value="0"><div class="radio-dot"></div>かからない</label>
+          <label class="choice-label"><input type="radio" name="q6" value="1"><div class="radio-dot"></div>少しかかる</label>
+          <label class="choice-label"><input type="radio" name="q6" value="2"><div class="radio-dot"></div>かなりかかる</label>
+          <label class="choice-label"><input type="radio" name="q6" value="3"><div class="radio-dot"></div>文章化が苦手</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-badge" style="background:var(--cat-c)">C</div>
+        <div class="cat-title">リール制作</div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q7"><span class="q-num">Q7</span>リールの台本や構成を考えるのに、1本あたりどのくらい時間がかかりますか？</div>
+        <div class="choices" data-q="q7" role="radiogroup" aria-labelledby="qt-q7">
+          <label class="choice-label"><input type="radio" name="q7" value="0"><div class="radio-dot"></div>10分未満</label>
+          <label class="choice-label"><input type="radio" name="q7" value="1"><div class="radio-dot"></div>10〜30分</label>
+          <label class="choice-label"><input type="radio" name="q7" value="2"><div class="radio-dot"></div>30分〜1時間</label>
+          <label class="choice-label"><input type="radio" name="q7" value="3"><div class="radio-dot"></div>1時間以上</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q8"><span class="q-num">Q8</span>撮影した動画から使うカットを選び、編集する順番を決める作業に負担を感じますか？</div>
+        <div class="choices" data-q="q8" role="radiogroup" aria-labelledby="qt-q8">
+          <label class="choice-label"><input type="radio" name="q8" value="0"><div class="radio-dot"></div>負担はない</label>
+          <label class="choice-label"><input type="radio" name="q8" value="1"><div class="radio-dot"></div>少し負担</label>
+          <label class="choice-label"><input type="radio" name="q8" value="2"><div class="radio-dot"></div>かなり負担</label>
+          <label class="choice-label"><input type="radio" name="q8" value="3"><div class="radio-dot"></div>何から始めるか迷う</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- D -->
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-badge" style="background:var(--cat-d)">D</div>
+        <div class="cat-title">投稿後の運用・分析</div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q9"><span class="q-num">Q9</span>DMやコメントへの返信に負担を感じていますか？</div>
+        <div class="choices" data-q="q9" role="radiogroup" aria-labelledby="qt-q9">
+          <label class="choice-label"><input type="radio" name="q9" value="0"><div class="radio-dot"></div>負担はない</label>
+          <label class="choice-label"><input type="radio" name="q9" value="1"><div class="radio-dot"></div>少し負担</label>
+          <label class="choice-label"><input type="radio" name="q9" value="2"><div class="radio-dot"></div>かなり負担</label>
+          <label class="choice-label"><input type="radio" name="q9" value="3"><div class="radio-dot"></div>返信が追いつかない</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q10"><span class="q-num">Q10</span>投稿の反応を記録・分析する作業に負担を感じていますか？</div>
+        <div class="choices" data-q="q10" role="radiogroup" aria-labelledby="qt-q10">
+          <label class="choice-label"><input type="radio" name="q10" value="0"><div class="radio-dot"></div>負担はない</label>
+          <label class="choice-label"><input type="radio" name="q10" value="1"><div class="radio-dot"></div>少し負担</label>
+          <label class="choice-label"><input type="radio" name="q10" value="2"><div class="radio-dot"></div>かなり負担</label>
+          <label class="choice-label"><input type="radio" name="q10" value="3"><div class="radio-dot"></div>記録・分析できていない</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q11"><span class="q-num">Q11</span>インサイトを見ても、次の投稿で何を改善すればよいか分からないことがありますか？</div>
+        <div class="choices" data-q="q11" role="radiogroup" aria-labelledby="qt-q11">
+          <label class="choice-label"><input type="radio" name="q11" value="0"><div class="radio-dot"></div>ほとんどない</label>
+          <label class="choice-label"><input type="radio" name="q11" value="1"><div class="radio-dot"></div>時々ある</label>
+          <label class="choice-label"><input type="radio" name="q11" value="2"><div class="radio-dot"></div>よくある</label>
+          <label class="choice-label"><input type="radio" name="q11" value="3"><div class="radio-dot"></div>改善方法が分からない</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- E -->
+    <div class="cat-card">
+      <div class="cat-header">
+        <div class="cat-badge" style="background:var(--cat-e)">E</div>
+        <div class="cat-title">投稿全体の負担</div>
+      </div>
+      <div class="question">
+        <div class="q-text" id="qt-q12"><span class="q-num">Q12</span>もっと投稿を増やしたいのに、時間が足りないと感じていますか？</div>
+        <div class="choices" data-q="q12" role="radiogroup" aria-labelledby="qt-q12">
+          <label class="choice-label"><input type="radio" name="q12" value="0"><div class="radio-dot"></div>感じない</label>
+          <label class="choice-label"><input type="radio" name="q12" value="1"><div class="radio-dot"></div>少し感じる</label>
+          <label class="choice-label"><input type="radio" name="q12" value="2"><div class="radio-dot"></div>かなり感じる</label>
+          <label class="choice-label"><input type="radio" name="q12" value="3"><div class="radio-dot"></div>投稿を増やせず困っている</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button class="btn-diagnose" id="btnDiagnose" disabled onclick="showResults()">診断結果を見る</button>
+      <div class="submit-note" id="submitNote">残り 12 問回答してください</div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div id="results">
+    <div class="result-card">
+      <div class="result-header">
+        <h2 id="resultsTitle" tabindex="-1">負担の大きい作業の目安</h2>
+        <p>スコアが高いほど、AIでラクにできる余地がある目安です</p>
+      </div>
+      <div class="score-bars" id="scoreBars"></div>
+      <div class="recs" id="recs"></div>
+    </div>
+    <div class="submit-wrap" style="margin-top:8px">
+      <button class="btn-retry" onclick="retry()">もう一度診断する</button>
+      <p><a class="back" href="../index.html">← ポートフォリオに戻る</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CATS = {
+    A: { label: 'A 企画・ネタ探し', qs: ['q1','q2','q3'], max: 10, color: 'var(--cat-a)',
+         ai: 'ChatGPTなどの生成AIに「今週の投稿ネタを10個出して」と頼むと、企画の下書きが作れる場合があります。過去投稿との重複確認の手間も、減らせる場合があります。' },
+    B: { label: 'B 文章・レシピ作成', qs: ['q4','q5','q6'], max: 9, color: 'var(--cat-b)',
+         ai: 'キャプション・ハッシュタグ・レシピ文章は、生成AIに下書きを作らせて、自分は確認する形にできる場合があります。レシピの分量やアレルゲンは、必ずご自身で確認してください。' },
+    C: { label: 'C リール制作', qs: ['q7','q8'], max: 6, color: 'var(--cat-c)',
+         ai: 'リール台本の型（冒頭3秒・展開・締め）を生成AIに伝えておくと、料理名から台本の下書きが作れる場合があります。' },
+    D: { label: 'D 投稿後の運用', qs: ['q9','q10','q11'], max: 9, color: 'var(--cat-d)',
+         ai: 'インサイトの数字を生成AIに貼り付けて、「次は何を改善するとよいか」の案を出してもらえる場合があります。返信文の下書きも任せられます。' },
+    E: { label: 'E 全体の時間不足', qs: ['q12'], max: 3, color: 'var(--cat-e)',
+         ai: '投稿作業全体の時間を減らせる可能性があります。まず一番時間のかかる工程から、ラクにする方法を試しましょう。' }
+  };
+
+  const totalQ = 12;
+  let answered = 0;
+
+  document.querySelectorAll('.choices').forEach(group => {
+    group.querySelectorAll('.choice-label').forEach(label => {
+      label.addEventListener('click', () => {
+        const name = label.querySelector('input').name;
+        const wasAnswered = document.querySelector(`input[name="${name}"]:checked`) !== null;
+        group.querySelectorAll('.choice-label').forEach(l => l.classList.remove('selected'));
+        label.classList.add('selected');
+        label.querySelector('input').checked = true;
+        if (!wasAnswered) {
+          answered++;
+          updateProgress();
+        }
+      });
+    });
+  });
+
+  function updateProgress() {
+    const pct = (answered / totalQ) * 100;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressText').textContent = answered;
+    const rem = totalQ - answered;
+    const btn = document.getElementById('btnDiagnose');
+    const note = document.getElementById('submitNote');
+    if (answered === totalQ) {
+      btn.disabled = false;
+      note.textContent = '全問回答完了！';
+    } else {
+      btn.disabled = true;
+      note.textContent = '残り ' + rem + ' 問回答してください';
+    }
+  }
+
+  function getScore(qs) {
+    return qs.reduce((sum, q) => {
+      const el = document.querySelector(`input[name="${q}"]:checked`);
+      return sum + (el ? parseInt(el.value) : 0);
+    }, 0);
+  }
+
+  function showResults() {
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('resultsTitle').focus({ preventScroll: true });
+
+    const scores = {};
+    Object.entries(CATS).forEach(([k, v]) => {
+      scores[k] = { score: getScore(v.qs), max: v.max, pct: Math.round(getScore(v.qs) / v.max * 100) };
+    });
+
+    // Bars
+    const barsHtml = Object.entries(CATS).map(([k, v]) => {
+      const pct = scores[k].pct;
+      return `
+        <div class="score-row">
+          <div class="score-cat-label" style="color:${v.color}">${v.label}</div>
+          <div class="score-bar-bg">
+            <div class="score-bar-fill" style="width:${pct}%;background:${v.color}"></div>
+          </div>
+          <div class="score-pct" style="color:${v.color}">${pct}%</div>
+        </div>`;
+    }).join('');
+    document.getElementById('scoreBars').innerHTML = barsHtml;
+
+    // Recs: sort by pct desc
+    const sorted = Object.entries(scores).sort((a,b) => b[1].pct - a[1].pct);
+    const recsHtml = sorted.map(([k, s]) => {
+      const cat = CATS[k];
+      const cls = s.pct >= 67 ? 'high' : s.pct >= 34 ? 'mid' : 'low';
+      const tag = s.pct >= 67 ? '優先度：高' : s.pct >= 34 ? '優先度：中' : '余裕あり';
+      return `
+        <div class="rec-item ${cls}">
+          <div class="rec-title">${tag}　${cat.label}</div>
+          <div class="rec-body">${cat.ai}</div>
+        </div>`;
+    }).join('');
+    document.getElementById('recs').innerHTML = recsHtml;
+  }
+
+  function retry() {
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.choice-label').forEach(l => l.classList.remove('selected'));
+    answered = 0;
+    updateProgress();
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.querySelector('.back').focus();
+  }
+</script>
+
+</body>
+</html>
